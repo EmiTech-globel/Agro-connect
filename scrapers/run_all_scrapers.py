@@ -23,9 +23,7 @@ logger = logging.getLogger(__name__)
 # Import all your scrapers here
 # Uncomment as you create them
 from scrapers.sample_scraper import SampleScraper
-# from scrapers.lagos_market_scraper import LagosMarketScraper
-# from scrapers.kano_market_scraper import KanoMarketScraper
-# from scrapers.naerls_scraper import NAERLSScraper
+from scrapers.jiji_scraper import JijiScraper
 
 # Configure which scrapers to run
 ACTIVE_SCRAPERS = [
@@ -35,19 +33,14 @@ ACTIVE_SCRAPERS = [
         'enabled': True,
         'priority': 1  # Lower number = higher priority
     },
-    # Uncomment and add as you create more scrapers
-    # {
-    #     'name': 'Lagos Market Board',
-    #     'class': LagosMarketScraper,
-    #     'enabled': True,
-    #     'priority': 2
-    # },
-    # {
-    #     'name': 'Kano Market',
-    #     'class': KanoMarketScraper,
-    #     'enabled': True,
-    #     'priority': 3
-    # },
+
+    {
+        'name': 'jiji scraper',
+        'class': JijiScraper,
+        'enabled': True,
+        'priority': 2
+    }
+    # Add more scrapers here
 ]
 
 def run_scraper(scraper_config):
@@ -76,7 +69,7 @@ def run_scraper(scraper_config):
         }
         
     except Exception as e:
-        logger.error(f"❌ {scraper_name} failed: {e}")
+        logger.error(f"{scraper_name} failed: {e}")
         return {
             'name': scraper_name,
             'status': 'failed',
@@ -130,12 +123,12 @@ def run_all_scrapers(parallel=False):
     logger.info(f"Failed: {len(failed)}/{len(results)}\n")
     
     if successful:
-        logger.info("✅ Successful scrapers:")
+        logger.info("Successful scrapers:")
         for r in successful:
             logger.info(f"   - {r['name']} ({r['elapsed']:.2f}s)")
     
     if failed:
-        logger.info("\n❌ Failed scrapers:")
+        logger.info("\n Failed scrapers:")
         for r in failed:
             logger.info(f"   - {r['name']}: {r['error']}")
     
@@ -170,7 +163,7 @@ if __name__ == '__main__':
         print("\nAvailable Scrapers:")
         print("-" * 60)
         for scraper in ACTIVE_SCRAPERS:
-            status = "✅ Enabled" if scraper.get('enabled', True) else "❌ Disabled"
+            status = "Enabled" if scraper.get('enabled', True) else "Disabled"
             print(f"{scraper['name']:<30} {status:<15} Priority: {scraper.get('priority', 'N/A')}")
         print()
     elif args.scraper:
